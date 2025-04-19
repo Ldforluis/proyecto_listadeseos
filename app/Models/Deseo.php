@@ -25,5 +25,10 @@ class Deseo extends Model
     {
         return $this->belongsTo(Estado::class, 'id_estado');
     }
-}
 
+    // Añade esta relación
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
+}

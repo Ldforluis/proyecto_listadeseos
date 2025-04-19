@@ -8,32 +8,45 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('deseos', function (Blueprint $table) {
             $table->id('id_deseos');
-            $table->unsignedBigInteger('id_usuario');
+
+            // Relación con usuario (autenticación)
+            $table->foreignId('id_usuario')
+                  ->constrained('users')
+                  ->cascadeOnDelete()
+                  ->cascadeOnUpdate();
+
             $table->string('nombre_deseos', 255);
             $table->text('descripcion');
-            $table->unsignedBigInteger('id_categoria');
-            $table->unsignedBigInteger('id_estado'); // Cambiado a id_estado para consistencia
+
+            // Relación con categorías
+            $table->foreignId('id_categoria')
+                  ->constrained('categorias')
+                  ->cascadeOnDelete()
+                  ->cascadeOnUpdate();
+
+            // Relación con estados
+            $table->foreignId('id_estado')
+                  ->constrained('estados')
+                  ->cascadeOnDelete()
+                  ->cascadeOnUpdate();
+
             $table->timestamps();
 
-            // Claves foráneas con nombres explícitos
-            $table->foreign('id_usuario', 'fk_deseos_usuario')
-                  ->references('id')->on('users') // Cambiado a 'users' si es la tabla estándar de Laravel
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
-
-            $table->foreign('id_categoria', 'fk_deseos_categoria')
-                  ->references('id_categoria')->on('categorias')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
-
-            $table->foreign('id_estado', 'fk_deseos_estado')
-                  ->references('id_estado')->on('estados')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
+            // Índices para mejorar el rendimiento
+            $table->index('id_usuario');
+            $table->index('id_categoria');
+            $table->index('id_estado');
         });
     }
+
     public function down(): void {
+        // Eliminar las claves foráneas primero
+        Schema::table('deseos', function (Blueprint $table) {
+            $table->dropForeign(['id_usuario']);
+            $table->dropForeign(['id_categoria']);
+            $table->dropForeign(['id_estado']);
+        });
+
         Schema::dropIfExists('deseos');
     }
 };
-
