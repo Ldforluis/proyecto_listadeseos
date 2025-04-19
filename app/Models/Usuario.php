@@ -5,19 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Categorias extends Model
+
+class Usuario extends Model
 {
     use HasFactory;
 
-    protected $table = 'categorias';
-    protected $primaryKey = 'id_categoria';
-
     protected $fillable = [
-        'nombre_categoria',
+        'nombre',
+        'correo',
+        'contraseña',
+    ];
+
+    protected $hidden = [
+        'contraseña',
     ];
 
     public function deseos()
     {
-        return $this->hasMany(Deseos::class, 'id_categoria');
+        return $this->hasMany(Deseo::class);
     }
 }
+

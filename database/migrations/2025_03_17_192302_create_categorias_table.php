@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB; // <-- Añade esta línea
 
 return new class extends Migration
 {
@@ -16,13 +17,12 @@ return new class extends Migration
             $table->string('nombre_categoria');
             $table->timestamps();
         });
-    }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('categorias');
-    }
+        // Insertar datos iniciales
+        DB::table('categorias')->insert([
+            ['nombre_categoria' => 'Viajes'],
+            ['nombre_categoria' => 'Tecnología'],
+            ['nombre_categoria' => 'Hogar']
+        ]);
+}
 };
