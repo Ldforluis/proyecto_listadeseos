@@ -6,6 +6,7 @@
     <title>Lista de Deseos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
             --primary-color: #000000;
@@ -13,9 +14,10 @@
             --light-bg: #f8fafc;
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --transition: all 0.3s ease;
+            --navbar-height: 60px;
         }
 
-        /* Efecto de luz animada CORREGIDO */
+        /* Efecto de luz animada */
         body {
             min-height: 100vh;
             display: flex;
@@ -35,7 +37,7 @@
             background:
                 radial-gradient(circle at 70% 30%, rgba(101, 110, 119, 0.788), transparent 30%),
                 radial-gradient(circle at 30% 70%, rgb(126, 167, 201), transparent 30%);
-            animation: lightMovement 20s linear infinite alternate;
+            animation: lightMovement 10s linear infinite alternate;
             z-index: -1;
             pointer-events: none;
         }
@@ -48,20 +50,120 @@
             100% { transform: translate(15%, 10%); }
         }
 
-        /* Contenido principal con fondo semitransparente */
+        /* Barra de navegación con efectos */
+        .navbar {
+            height: var(--navbar-height);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.9) !important;
+            backdrop-filter: blur(12px);
+            transition: all 0.5s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar.scrolled {
+            height: calc(var(--navbar-height) - 10px);
+            background-color: rgba(0, 0, 0, 0.95) !important;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+        .navbar-brand:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .navbar-brand i {
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover i {
+            transform: rotate(15deg) scale(1.2);
+            text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .btn-outline-light {
+            border-width: 2px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            color: #000 !important;
+        }
+
+        .btn-outline-light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: white;
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-outline-light:hover::before {
+            left: 0;
+        }
+
+        /* Efecto de aparición suave */
+        .animate-nav {
+            animation: fadeInDown 0.8s both;
+        }
+
+        /* Contenido principal */
         .main-content {
             flex: 1;
             padding: 2rem 0;
             background-color: rgba(244, 248, 253, 0.85);
         }
 
-        /* Estilos existentes mejorados */
-        .navbar {
-            box-shadow: var(--card-shadow);
-            background-color: rgba(0, 0, 0, 0.85) !important;
-            backdrop-filter: blur(8px);
-        }
-
+        /* Resto de estilos */
         .card {
             border: none;
             border-radius: 0.5rem;
@@ -144,7 +246,7 @@
     </style>
 </head>
 <body class="d-flex flex-column h-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 animate-nav">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                 <i class="fas fa-star me-2"></i>
@@ -175,6 +277,29 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Efecto de reducción al hacer scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Efecto de hover en el icono de la marca
+        const brandIcon = document.querySelector('.navbar-brand i');
+        brandIcon.addEventListener('mouseenter', function() {
+            this.style.transform = 'rotate(15deg) scale(1.2)';
+            this.style.textShadow = '0 0 10px rgba(244, 63, 94, 0.5)';
+        });
+        
+        brandIcon.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.textShadow = '';
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
